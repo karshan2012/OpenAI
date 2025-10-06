@@ -1,0 +1,18 @@
+[
+  {
+    "question": "What is OpenAI?",
+    "answer": "OpenAI is a research and deployment company focused on ensuring that artificial general intelligence benefits all of humanity."
+  },
+  {
+    "question": "How does the multi-agent system work?",
+    "answer": "The system uses a router agent to decide whether a question should be answered by the knowledge base, the calculator application, or the weather application."
+  },
+  {
+    "question": "What is artificial intelligence?",
+    "answer": "Artificial intelligence refers to systems or machines that mimic human intelligence to perform tasks and can iteratively improve themselves based on the information they collect."
+  },
+  {
+    "question": "How can I reset the conversation?",
+    "answer": "You can reset the conversation by creating a new instance of the orchestrator, which clears any stored context."
+  }
+]
