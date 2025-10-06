@@ -1,0 +1,111 @@
+{
+  "info": {
+    "name": "PocketGPT API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": ["{{baseUrl}}"],
+          "path": ["health"]
+        }
+      }
+    },
+    {
+      "name": "Send Magic Link",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"demo@pocketgpt.app\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/auth/magic-link",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "auth", "magic-link"]
+        }
+      }
+    },
+    {
+      "name": "Create Chat",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"My Chat\"\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/chats",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "chats"]
+        }
+      }
+    },
+    {
+      "name": "Send Message Stream",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"message\": \"Hello PocketGPT\",\n  \"model\": \"gpt-4o-mini\",\n  \"temperature\": 0.2,\n  \"tools_enabled\": true\n}"
+        },
+        "url": {
+          "raw": "{{baseUrl}}/v1/chats/{{chatId}}/messages?stream=1",
+          "host": ["{{baseUrl}}"],
+          "path": ["v1", "chats", "{{chatId}}", "messages"],
+          "query": [
+            {
+              "key": "stream",
+              "value": "1"
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000"
+    },
+    {
+      "key": "token",
+      "value": ""
+    },
+    {
+      "key": "chatId",
+      "value": "1"
+    }
+  ]
+}
