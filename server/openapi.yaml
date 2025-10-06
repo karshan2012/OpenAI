@@ -1,0 +1,207 @@
+openapi: 3.1.0
+info:
+  title: PocketGPT API
+  version: 0.1.0
+servers:
+  - url: https://api.pocketgpt.local/v1
+paths:
+  /auth/magic-link:
+    post:
+      summary: Request a magic link
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MagicLinkRequest'
+      responses:
+        '200':
+          description: Magic link sent
+  /auth/callback:
+    get:
+      summary: Exchange callback for JWT
+      parameters:
+        - in: query
+          name: code
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Authenticated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+  /chats:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List chats
+      responses:
+        '200':
+          description: List of chats
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create chat
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChatCreateRequest'
+      responses:
+        '201':
+          description: Chat created
+  /chats/{chatId}:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Get chat detail
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Chat detail
+    delete:
+      security:
+        - bearerAuth: []
+      summary: Delete chat
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Deleted
+  /chats/{chatId}/messages:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List chat messages
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Message list
+    post:
+      security:
+        - bearerAuth: []
+      summary: Create message and stream assistant reply
+      parameters:
+        - in: path
+          name: chatId
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MessageCreateRequest'
+      responses:
+        '200':
+          description: SSE stream of assistant response
+  /connections:
+    get:
+      security:
+        - bearerAuth: []
+      summary: List provider connection status
+      responses:
+        '200':
+          description: Connection status
+  /oauth/google/start:
+    get:
+      summary: Start Google OAuth
+      responses:
+        '200':
+          description: Authorization URL
+  /oauth/google/callback:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Handle Google OAuth callback
+      parameters:
+        - in: query
+          name: code
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Connected
+  /oauth/notion/start:
+    get:
+      summary: Start Notion OAuth
+      responses:
+        '200':
+          description: Authorization URL
+  /oauth/notion/callback:
+    get:
+      security:
+        - bearerAuth: []
+      summary: Handle Notion OAuth callback
+      parameters:
+        - in: query
+          name: code
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Connected
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  schemas:
+    MagicLinkRequest:
+      type: object
+      required:
+        - email
+      properties:
+        email:
+          type: string
+          format: email
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        expires_at:
+          type: string
+          format: date-time
+    ChatCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+    MessageCreateRequest:
+      type: object
+      required:
+        - message
+        - model
+      properties:
+        message:
+          type: string
+        model:
+          type: string
+        temperature:
+          type: number
+        tools_enabled:
+          type: boolean
