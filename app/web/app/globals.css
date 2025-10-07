@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply bg-background text-foreground min-h-screen;
+  font-family: var(--font-sans);
+}
+
+a {
+  @apply text-blue-600 hover:underline;
+}
