@@ -1,0 +1,21 @@
+{
+  "name": "chatgpt-analytics-monorepo",
+  "private": true,
+  "workspaces": [
+    "app/web",
+    "app/api"
+  ],
+  "scripts": {
+    "build": "npm run build --workspaces",
+    "lint": "npm run lint --workspaces",
+    "test": "vitest run && npm run test --workspaces"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "vitest": "^3.2.4"
+  },
+  "dependencies": {
+    "next": "14.2.33",
+    "shadcn-ui": "0.9.5"
+  }
+}
