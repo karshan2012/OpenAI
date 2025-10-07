@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, type Response } from 'express';
 import { z } from 'zod';
 import { withScopedClient } from '../db.js';
 import { assertDashboardAccess } from '../rbac.js';
@@ -34,11 +34,11 @@ export const dashboardsRouter = Router();
 
 async function handleQuery(
   req: AuthenticatedRequest,
-  res: any,
+  res: Response,
   slug: string,
   sql: string,
   params: unknown[]
-) {
+): Promise<Response> {
   const user = req.user;
   if (!user) {
     return res.status(401).json({ error: 'Unauthorized' });
@@ -61,7 +61,7 @@ const overviewSchema = dateRangeSchema.extend({
   platform: z.string().optional()
 });
 
-dashboardsRouter.get('/overview', async (req, res) => {
+dashboardsRouter.get('/overview', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = overviewSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const filters: string[] = [];
@@ -76,11 +76,11 @@ dashboardsRouter.get('/overview', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, filters);
   const sql = `SELECT * FROM analytics.v_exec_overview ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'overview', sql, params);
+  return handleQuery(req, res, 'overview', sql, params);
 });
 
 const modelQualitySchema = dateRangeSchema.extend({ model_id: z.string().uuid().optional() });
-dashboardsRouter.get('/models/quality', async (req, res) => {
+dashboardsRouter.get('/models/quality', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = modelQualitySchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -91,14 +91,14 @@ dashboardsRouter.get('/models/quality', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extra);
   const sql = `SELECT * FROM analytics.v_model_quality ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'quality', sql, params);
+  return handleQuery(req, res, 'quality', sql, params);
 });
 
 const latencySchema = dateRangeSchema.extend({
   model_id: z.string().uuid().optional(),
   platform: z.string().optional()
 });
-dashboardsRouter.get('/latency', async (req, res) => {
+dashboardsRouter.get('/latency', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = latencySchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -113,11 +113,11 @@ dashboardsRouter.get('/latency', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_latency_by_model_platform ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'ops', sql, params);
+  return handleQuery(req, res, 'ops', sql, params);
 });
 
 const toolSchema = dateRangeSchema.extend({ tool_id: z.string().uuid().optional() });
-dashboardsRouter.get('/tools/health', async (req, res) => {
+dashboardsRouter.get('/tools/health', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = toolSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -128,11 +128,11 @@ dashboardsRouter.get('/tools/health', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_tool_health ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'tools', sql, params);
+  return handleQuery(req, res, 'tools', sql, params);
 });
 
 const safetySchema = dateRangeSchema.extend({ category_id: z.coerce.number().optional() });
-dashboardsRouter.get('/safety', async (req, res) => {
+dashboardsRouter.get('/safety', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = safetySchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -143,11 +143,11 @@ dashboardsRouter.get('/safety', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_safety_by_category ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'safety', sql, params);
+  return handleQuery(req, res, 'safety', sql, params);
 });
 
 const costSchema = dateRangeSchema.extend({ model_id: z.string().uuid().optional() });
-dashboardsRouter.get('/costs', async (req, res) => {
+dashboardsRouter.get('/costs', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = costSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -158,11 +158,11 @@ dashboardsRouter.get('/costs', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_cost_by_model ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'costs', sql, params);
+  return handleQuery(req, res, 'costs', sql, params);
 });
 
 const featureSchema = dateRangeSchema.extend({ feature_id: z.string().uuid().optional() });
-dashboardsRouter.get('/features', async (req, res) => {
+dashboardsRouter.get('/features', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = featureSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -173,11 +173,11 @@ dashboardsRouter.get('/features', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_feature_adoption ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'features', sql, params);
+  return handleQuery(req, res, 'features', sql, params);
 });
 
 const promptsSchema = dateRangeSchema.extend({ template_id: z.string().uuid().optional() });
-dashboardsRouter.get('/prompts', async (req, res) => {
+dashboardsRouter.get('/prompts', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = promptsSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -188,11 +188,11 @@ dashboardsRouter.get('/prompts', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_prompt_template_perf ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'prompts', sql, params);
+  return handleQuery(req, res, 'prompts', sql, params);
 });
 
 const experimentsSchema = dateRangeSchema.extend({ experiment_id: z.string().uuid().optional() });
-dashboardsRouter.get('/experiments', async (req, res) => {
+dashboardsRouter.get('/experiments', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = experimentsSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -203,11 +203,11 @@ dashboardsRouter.get('/experiments', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_experiment_results ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'experiments', sql, params);
+  return handleQuery(req, res, 'experiments', sql, params);
 });
 
 const errorsSchema = dateRangeSchema.extend({ error_id: z.string().uuid().optional() });
-dashboardsRouter.get('/errors', async (req, res) => {
+dashboardsRouter.get('/errors', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = errorsSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -218,18 +218,18 @@ dashboardsRouter.get('/errors', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_error_taxonomy ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'errors', sql, params);
+  return handleQuery(req, res, 'errors', sql, params);
 });
 
-dashboardsRouter.get('/hourly', async (req, res) => {
+dashboardsRouter.get('/hourly', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = dateRangeSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const sql = `SELECT * FROM analytics.v_usage_hourly_heatmap ${filter.clause} ORDER BY date_key DESC, hour`;
-  return handleQuery(req as AuthenticatedRequest, res, 'hourly', sql, filter.values);
+  return handleQuery(req, res, 'hourly', sql, filter.values);
 });
 
 const retentionSchema = dateRangeSchema.extend({ cohort_start: z.string().optional() });
-dashboardsRouter.get('/retention', async (req, res) => {
+dashboardsRouter.get('/retention', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = retentionSchema.parse(req.query);
   const filters: string[] = [];
   const params: string[] = [];
@@ -246,24 +246,24 @@ dashboardsRouter.get('/retention', async (req, res) => {
     params.push(parsed.cohort_start);
   }
   const sql = `SELECT * FROM analytics.v_retention_cohorts ${filters.length ? `WHERE ${filters.join(' AND ')}` : ''} ORDER BY cohort_week DESC, week_n`;
-  return handleQuery(req as AuthenticatedRequest, res, 'growth', sql, params);
+  return handleQuery(req, res, 'growth', sql, params);
 });
 
-dashboardsRouter.get('/releases', async (req, res) => {
+dashboardsRouter.get('/releases', async (req: AuthenticatedRequest, res: Response) => {
   const sql = 'SELECT * FROM analytics.v_release_annotations ORDER BY released_at DESC';
-  return handleQuery(req as AuthenticatedRequest, res, 'releases', sql, []);
+  return handleQuery(req, res, 'releases', sql, []);
 });
 
 
-dashboardsRouter.get('/bi-usage', async (req, res) => {
+dashboardsRouter.get('/bi-usage', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = dateRangeSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const sql = `SELECT * FROM analytics.v_bi_audit ${filter.clause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'admin-bi-usage', sql, filter.values);
+  return handleQuery(req, res, 'admin-bi-usage', sql, filter.values);
 });
 
 const sessionsSchema = dateRangeSchema.extend({ q: z.string().optional() });
-dashboardsRouter.get('/sessions', async (req, res) => {
+dashboardsRouter.get('/sessions', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = sessionsSchema.parse(req.query);
   const params: (string | number)[] = [];
   const filters: string[] = [];
@@ -280,16 +280,16 @@ dashboardsRouter.get('/sessions', async (req, res) => {
     params.push(`%${parsed.q}%`);
   }
   const sql = `SELECT * FROM analytics.fact_session_summary ${filters.length ? `WHERE ${filters.join(' AND ')}` : ''} ORDER BY started_at DESC LIMIT 200`;
-  return handleQuery(req as AuthenticatedRequest, res, 'conversations', sql, params);
+  return handleQuery(req, res, 'conversations', sql, params);
 });
 
-dashboardsRouter.get('/session/:id', async (req, res) => {
+dashboardsRouter.get('/session/:id', async (req: AuthenticatedRequest, res: Response) => {
   const sessionId = req.params.id;
   const sql = 'SELECT * FROM analytics.fact_session_summary WHERE session_id = $1';
-  return handleQuery(req as AuthenticatedRequest, res, 'conversations', sql, [sessionId]);
+  return handleQuery(req, res, 'conversations', sql, [sessionId]);
 });
 
-dashboardsRouter.get('/costs/per-success', async (req, res) => {
+dashboardsRouter.get('/costs/per-success', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = costSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -300,11 +300,11 @@ dashboardsRouter.get('/costs/per-success', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_cost_per_success ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'costs', sql, params);
+  return handleQuery(req, res, 'costs', sql, params);
 });
 
 const regionLatencySchema = dateRangeSchema.extend({ region_id: z.string().uuid().optional(), model_id: z.string().uuid().optional() });
-dashboardsRouter.get('/regions', async (req, res) => {
+dashboardsRouter.get('/regions', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = regionLatencySchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -319,10 +319,10 @@ dashboardsRouter.get('/regions', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_latency_by_region ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'regions', sql, params);
+  return handleQuery(req, res, 'regions', sql, params);
 });
 
-dashboardsRouter.get('/regions/latency', async (req, res) => {
+dashboardsRouter.get('/regions/latency', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = regionLatencySchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const params = [...filter.values];
@@ -337,21 +337,21 @@ dashboardsRouter.get('/regions/latency', async (req, res) => {
   }
   const whereClause = combineWhere(filter.normalized, extras);
   const sql = `SELECT * FROM analytics.v_latency_by_region ${whereClause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'regions', sql, params);
+  return handleQuery(req, res, 'regions', sql, params);
 });
 
-dashboardsRouter.get('/regions/cache', async (req, res) => {
+dashboardsRouter.get('/regions/cache', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = dateRangeSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const sql = `SELECT * FROM analytics.fact_daily_cache ${filter.clause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'regions', sql, filter.values);
+  return handleQuery(req, res, 'regions', sql, filter.values);
 });
 
-dashboardsRouter.get('/regions/platform-health', async (req, res) => {
+dashboardsRouter.get('/regions/platform-health', async (req: AuthenticatedRequest, res: Response) => {
   const parsed = dateRangeSchema.parse(req.query);
   const filter = buildDateFilter('date_key', parsed);
   const sql = `SELECT * FROM analytics.fact_daily_platform_version_health ${filter.clause} ORDER BY date_key DESC`;
-  return handleQuery(req as AuthenticatedRequest, res, 'regions', sql, filter.values);
+  return handleQuery(req, res, 'regions', sql, filter.values);
 });
 
 const catalog = {
@@ -375,6 +375,6 @@ const catalog = {
   'releases.annotations': { endpoint: '/releases', view: 'analytics.v_release_annotations', component: 'ReleaseTimeline', drill: '/releases' }
 };
 
-dashboardsRouter.get('/_catalog', async (req, res) => {
+dashboardsRouter.get('/_catalog', async (req: AuthenticatedRequest, res: Response) => {
   return res.json({ data: catalog });
 });

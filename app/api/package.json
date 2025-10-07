@@ -4,8 +4,8 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-"dev": "node --loader ts-node/esm --experimental-specifier-resolution=node --trace-uncaught src/server.ts",    
-"build": "tsc -p tsconfig.json",
+    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
+    "build": "tsc -p tsconfig.json",
     "start": "node build/server.js",
     "lint": "eslint .",
     "test": "vitest"
@@ -15,21 +15,20 @@
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "jsonwebtoken": "^9.0.2",
-    "next": "14.2.33",
     "pg": "^8.11.3",
-    "shadcn-ui": "0.9.5",
     "zod": "^3.23.8"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^4.17.21",
     "@types/jsonwebtoken": "^9.0.5",
+    "@types/pg": "^8.10.2",
     "@types/node": "^20.12.7",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
     "eslint": "^8.57.0",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.4.5",
-    "vitest": "^3.2.4"
+    "vitest": "^1.5.0"
   }
 }

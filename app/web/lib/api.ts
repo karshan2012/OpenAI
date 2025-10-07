@@ -90,12 +90,28 @@ export async function getBiUsage(params: URLSearchParams) {
   return fetchFromApi<Record<string, unknown>[]>(`/bi-usage?${params.toString()}`);
 }
 
+export interface SessionSummary {
+  session_id: string;
+  account_id: string;
+  user_id: string;
+  model_id: string;
+  started_at: string;
+  ended_at: string | null;
+  turns: number;
+  success: boolean;
+  avg_latency_ms: number;
+  total_tokens: number;
+  cost_usd: string;
+  safety_flags: number;
+  tool_calls: number;
+}
+
 export async function getSessions(params: URLSearchParams) {
-  return fetchFromApi<Record<string, unknown>[]>(`/sessions?${params.toString()}`);
+  return fetchFromApi<SessionSummary[]>(`/sessions?${params.toString()}`);
 }
 
 export async function getSession(id: string) {
-  return fetchFromApi<Record<string, unknown>>(`/session/${id}`);
+  return fetchFromApi<SessionSummary>(`/session/${id}`);
 }
 
 export async function getCatalog() {
