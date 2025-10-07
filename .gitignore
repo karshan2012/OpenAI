@@ -1,0 +1,7 @@
+node_modules
+npm-debug.log*
+app/web/.next
+app/web/out
+app/api/build
+coverage
+playwright-report

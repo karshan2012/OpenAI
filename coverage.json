@@ -1,0 +1,93 @@
+{
+  "usage.sessions": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_usage", "analytics.fact_session_summary"],
+    "endpoints": ["/api/overview", "/api/sessions", "/api/hourly"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/conversations"
+  },
+  "quality.evals": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_evals", "analytics.v_model_quality"],
+    "endpoints": ["/api/models/quality"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/quality"
+  },
+  "latency.reliability": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_latency", "analytics.fact_daily_region_latency"],
+    "endpoints": ["/api/latency", "/api/regions/latency"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/ops"
+  },
+  "cost.tokens": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_cost", "analytics.v_cost_per_success"],
+    "endpoints": ["/api/costs", "/api/costs/per-success"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/costs"
+  },
+  "safety.compliance": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_safety", "analytics.v_safety_by_category"],
+    "endpoints": ["/api/safety"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/safety"
+  },
+  "tools.integrations": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_tool_usage", "analytics.v_tool_health"],
+    "endpoints": ["/api/tools/health"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/tools"
+  },
+  "growth.retention": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_growth", "analytics.fact_weekly_retention"],
+    "endpoints": ["/api/retention"],
+    "components": ["DataTable"],
+    "drill": "/growth"
+  },
+  "prompts.templates": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_prompt_templates", "analytics.v_prompt_template_perf"],
+    "endpoints": ["/api/prompts"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/prompts"
+  },
+  "experiments.flags": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_experiments", "analytics.v_experiment_results"],
+    "endpoints": ["/api/experiments"],
+    "components": ["DataTable"],
+    "drill": "/experiments"
+  },
+  "errors.incidents": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_error_taxonomy", "analytics.v_error_taxonomy"],
+    "endpoints": ["/api/errors"],
+    "components": ["DataTable"],
+    "drill": "/errors"
+  },
+  "geo.version": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_region_latency", "analytics.fact_daily_platform_version_health"],
+    "endpoints": ["/api/regions", "/api/regions/latency", "/api/regions/cache", "/api/regions/platform-health"],
+    "components": ["ChartCard", "DataTable"],
+    "drill": "/regions"
+  },
+  "bi.usage": {
+    "status": "ok",
+    "tables": ["analytics.fact_daily_bi_audit", "analytics.v_bi_audit"],
+    "endpoints": ["/api/bi-usage"],
+    "components": ["DataTable"],
+    "drill": "/admin/bi-usage"
+  },
+  "releases.annotations": {
+    "status": "ok",
+    "tables": ["analytics.dim_release", "analytics.v_release_annotations"],
+    "endpoints": ["/api/releases"],
+    "components": ["DataTable"],
+    "drill": "/releases"
+  }
+}
